@@ -6,7 +6,6 @@ import cat.coeli.alerts.alertsrepository.domain.AlertRepositoryContractTest
 import cat.coeli.alerts.alertsrepository.domain.Pagination
 import cat.coeli.alerts.testutils.embeddedPostgres
 import io.zonky.test.db.postgres.junit5.PreparedDbExtension
-import org.jetbrains.exposed.v1.jdbc.Database
 import org.junit.jupiter.api.extension.RegisterExtension
 
 class PlainSqlPostgresAlertRepositoryTest : AlertRepositoryContractTest() {
@@ -17,7 +16,7 @@ class PlainSqlPostgresAlertRepositoryTest : AlertRepositoryContractTest() {
     val db: PreparedDbExtension = embeddedPostgres()
 
     override fun newRepository(): AlertRepository {
-        val repository = PostgresAlertRepository(Database.connect(db.testDatabase))
+        val repository = PostgresAlertRepository(db.r2dbcDatabase())
         return object : AlertRepository by repository {
             override suspend fun search(minimumLevel: AlertLevel, pagination: Pagination) =
                 repository.search2(minimumLevel, pagination)

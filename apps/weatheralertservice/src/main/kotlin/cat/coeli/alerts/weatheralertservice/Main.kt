@@ -4,53 +4,50 @@ import cat.coeli.alerts.alertsrepository.infrastructure.postgres.PostgresAlertRe
 import cat.coeli.alerts.weather.infrastructure.openmeteo.OpenMeteoWeatherForecastProvider
 import cat.coeli.alerts.weather.infrastructure.openmeteo.openMeteoHttpClient
 import cat.coeli.alerts.weatheralertservice.domain.WeatherAlertService
-import com.zaxxer.hikari.HikariConfig
-import com.zaxxer.hikari.HikariDataSource
 import io.github.oshai.kotlinlogging.KotlinLogging
-import javax.sql.DataSource
 import kotlin.time.Clock
 import org.flywaydb.core.Flyway
-import org.jetbrains.exposed.v1.jdbc.Database
+import org.jetbrains.exposed.v1.r2dbc.R2dbcDatabase
 
 private val logger = KotlinLogging.logger {}
 
 suspend fun main() {
-    dataSourceFromEnvironment().use { dataSource ->
-        migrateDatabase(dataSource)
-        openMeteoHttpClient().use { httpClient ->
-            WeatherAlertService(
-                    forecastProvider = OpenMeteoWeatherForecastProvider(httpClient),
-                    alertRepository = PostgresAlertRepository(Database.connect(dataSource)),
-                    clock = Clock.System,
-                )
-                .run("Barcelona")
-                .forEach { alert ->
-                    logger.atInfo {
-                        message = "Recent alert"
-                        payload =
-                            mapOf(
-                                "occurredAt" to alert.occurredAt,
-                                "alertLevel" to alert.level,
-                                "alertId" to alert.id.value,
-                                "alertMessage" to alert.message,
-                            )
-                    }
+    val jdbcUrl = environmentVariable("DATABASE_URL")
+    val user = environmentVariable("DATABASE_USER")
+    val password = environmentVariable("DATABASE_PASSWORD")
+    migrateDatabase(jdbcUrl, user, password)
+    // The same database, through a pool of non-blocking R2DBC connections.
+    val database =
+        R2dbcDatabase.connect(
+            url = jdbcUrl.replaceFirst(oldValue = "jdbc:", newValue = "r2dbc:pool:"),
+            user = user,
+            password = password,
+        )
+    openMeteoHttpClient().use { httpClient ->
+        WeatherAlertService(
+                forecastProvider = OpenMeteoWeatherForecastProvider(httpClient),
+                alertRepository = PostgresAlertRepository(database),
+                clock = Clock.System,
+            )
+            .run("Barcelona")
+            .forEach { alert ->
+                logger.atInfo {
+                    message = "Recent alert"
+                    payload =
+                        mapOf(
+                            "occurredAt" to alert.occurredAt,
+                            "alertLevel" to alert.level,
+                            "alertId" to alert.id.value,
+                            "alertMessage" to alert.message,
+                        )
                 }
-        }
+            }
     }
 }
 
-private fun dataSourceFromEnvironment(): HikariDataSource =
-    HikariDataSource(
-        HikariConfig().apply {
-            jdbcUrl = environmentVariable("DATABASE_URL")
-            username = environmentVariable("DATABASE_USER")
-            password = environmentVariable("DATABASE_PASSWORD")
-        },
-    )
-
-private fun migrateDatabase(dataSource: DataSource) {
-    val migrations = Flyway.configure().dataSource(dataSource).load().migrate()
+// Flyway only works with JDBC.
+private fun migrateDatabase(jdbcUrl: String, user: String, password: String) {
+    val migrations = Flyway.configure().dataSource(jdbcUrl, user, password).load().migrate()
     logger.atInfo {
         message = "Applied database migrations"
         payload = mapOf("migrationsExecuted" to migrations.migrationsExecuted)

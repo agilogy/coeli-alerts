@@ -55,8 +55,8 @@ the cause, don't suppress it. Run `ktfmtFormat` before `build`.
   or reasons. Comments in domain code don't mention infrastructure (databases, specific APIs).
 - **Errors are exceptions**, not `Either`/result types. Validate invariants in `init` with `require(...)`
   (see `Pagination`).
-- **PostgreSQL access** uses Exposed's DSL (`exposed-jdbc`) over HikariCP. Tables are `internal object
-  XxxTable` next to the repository. Blocking JDBC calls run inside `withContext(Dispatchers.IO)`.
+- **PostgreSQL access** uses Exposed's DSL over R2DBC (`exposed-r2dbc`, non-blocking: no dispatcher needed).
+  Tables are `internal object XxxTable` next to the repository. Only Flyway migrations use JDBC.
 - **External HTTP APIs** use the Ktor client with kotlinx-serialization (see `weather`): a domain interface
   (`XxxProvider`), an adapter named after the service (`OpenMeteoXxxProvider`) with `internal` `@Serializable`
   DTOs, and tests against responses recorded from the real API, served by Ktor's `MockEngine`.
