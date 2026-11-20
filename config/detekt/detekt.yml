@@ -10,10 +10,6 @@ naming:
   FunctionNameMaxLength:
     excludes: ['**/test/**', '**/testFixtures/**']
 
-performance:
-  CouldBeSequence:
-    active: false
-
 potential-bugs:
   MissingUseCall:
     excludes: ['**/test/**', '**/testFixtures/**']
