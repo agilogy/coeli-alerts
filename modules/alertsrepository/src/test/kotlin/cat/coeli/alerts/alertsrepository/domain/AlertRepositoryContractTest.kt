@@ -8,13 +8,8 @@ import kotlin.test.assertFails
 import kotlin.time.Instant
 import kotlinx.coroutines.test.runTest
 
-/**
- * What every [AlertRepository] must do. Each implementation has a subclass that says how to create
- * it, and runs all these tests against it.
- */
 abstract class AlertRepositoryContractTest {
 
-    /** A new, empty repository for each test. */
     protected abstract fun newRepository(): AlertRepository
 
     private lateinit var repository: AlertRepository

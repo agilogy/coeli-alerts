@@ -14,7 +14,6 @@ import kotlin.test.assertFails
 import kotlin.test.assertNull
 import kotlinx.coroutines.test.runTest
 
-/** Runs against responses recorded from the real Open-Meteo APIs, served by a mock HTTP engine. */
 class OpenMeteoWeatherForecastProviderTest {
 
     @Test

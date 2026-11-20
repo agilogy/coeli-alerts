@@ -11,7 +11,6 @@ internal data class GeocodingResult(val name: String, val latitude: Double, val 
 
 @Serializable internal data class ForecastResponse(val daily: DailyResponse)
 
-/** Open-Meteo returns the daily forecast as parallel arrays, one element per day. */
 @Serializable
 internal data class DailyResponse(
     val time: List<String>,

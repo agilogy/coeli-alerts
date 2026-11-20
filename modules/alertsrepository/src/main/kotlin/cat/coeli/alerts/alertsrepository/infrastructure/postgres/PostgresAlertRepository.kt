@@ -68,7 +68,7 @@ class PostgresAlertRepository(private val database: Database) : AlertRepository 
         return alerts
     }
 
-    // The same search written in plain SQL with Exposed's `exec`, instead of its DSL.
+    // Alternative to search() in plain SQL instead of Exposed's DSL.
     private suspend fun search2(minimumLevel: AlertLevel, pagination: Pagination): List<Alert> =
         inTransaction {
             val levels = minimumLevel.atLeastAsSevere
@@ -87,8 +87,6 @@ class PostgresAlertRepository(private val database: Database) : AlertRepository 
                                 LongColumnType() to pagination.offset,
                             ),
                 ) { resultSet ->
-                    // Position of each column in the SELECT above, so rows can be read with
-                    // toAlert().
                     val fieldsIndex =
                         fieldsIndexOf(
                             AlertsTable.id,

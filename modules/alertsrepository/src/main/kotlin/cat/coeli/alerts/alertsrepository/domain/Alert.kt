@@ -12,7 +12,6 @@ enum class AlertLevel {
     ERROR,
     CRITICAL;
 
-    /** This level and every level more severe than it. */
     val atLeastAsSevere: Set<AlertLevel>
         get() = entries.filter { it >= this }.toSet()
 }

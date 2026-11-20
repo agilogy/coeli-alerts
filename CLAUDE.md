@@ -14,7 +14,7 @@ property-based testing, …) without asking.
 ./gradlew detekt                     # lint only
 ./gradlew :alertsrepository:test --tests 'cat.coeli.alerts.alertsrepository.infrastructure.postgres.PostgresAlertRepositoryTest.searchBreaksTiesInOccurredAtById'
 ./gradlew :alertsrepository:generateMigrations # generate a Flyway script from the Exposed tables (needs Docker)
-DATABASE_URL=… DATABASE_USER=… DATABASE_PASSWORD=… ./gradlew :app:run
+DATABASE_URL=… DATABASE_USER=… DATABASE_PASSWORD=… ./gradlew :weatheralertservice:run
 ```
 
 `build` fails on any ktfmt difference, any detekt issue and any compiler warning (`allWarningsAsErrors`): fix
@@ -22,9 +22,10 @@ the cause, don't suppress it. Run `ktfmtFormat` before `build`.
 
 ## Build structure
 
-- **Modules are discovered, not listed** (`settings.gradle.kts`): library modules live in `modules/<name>`, the
-  application in `app/`. Every such directory with a `build.gradle.kts` is a module named `:<name>` (no
-  `:modules:` prefix). To add one, create `modules/<name>/build.gradle.kts`.
+- **Modules are discovered, not listed** (`settings.gradle.kts`): applications live in `apps/<name>`, library
+  modules in `modules/<name>`. Every such directory with a `build.gradle.kts` is a module named `:<name>` (no
+  `:apps:`/`:modules:` prefix). To add one, create `apps/<name>/build.gradle.kts` or
+  `modules/<name>/build.gradle.kts`. An app's package is `cat.coeli.alerts.<name>`.
 - **Shared build config** lives in the `build-logic` included build, in the convention plugin
   `kotlin-jvm-conventions.gradle.kts` (Kotlin JVM, JDK toolchain, warnings as errors, ktfmt with KotlinLang
   style, detekt, kotlin-test on JUnit Platform). Every module applies it with
@@ -53,8 +54,8 @@ the cause, don't suppress it. Run `ktfmtFormat` before `build`.
   (`XxxProvider`), an adapter named after the service (`OpenMeteoXxxProvider`) with `internal` `@Serializable`
   DTOs, and tests against responses recorded from the real API, served by Ktor's `MockEngine`.
 - **Logging** with kotlin-logging: `private val logger = KotlinLogging.logger {}` and lambda messages
-  (`logger.info { "…" }`). Only `app` has a logging backend (Logback, `app/src/main/resources/logback.xml`);
-  other modules depend only on kotlin-logging.
+  (`logger.info { "…" }`). Only apps have a logging backend (Logback, `src/main/resources/logback.xml`);
+  library modules depend only on kotlin-logging.
 
 ## Database migrations
 
@@ -63,7 +64,8 @@ the cause, don't suppress it. Run `ktfmtFormat` before `build`.
 - Generate them from the Exposed tables with the Exposed Gradle plugin (`generateMigrations`, configured in
   the module's `exposed { migrations { … } }` block), review them, and never edit a script that may already
   have been applied.
-- The app applies pending migrations of all modules with Flyway at startup (`app/.../Main.kt`).
+- Each app applies the pending migrations of the modules it uses with Flyway at startup (see
+  `apps/weatheralertservice/.../Main.kt`).
 
 ## Tests
 

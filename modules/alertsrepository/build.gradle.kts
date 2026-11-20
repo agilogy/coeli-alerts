@@ -13,9 +13,6 @@ dependencies {
     testImplementation(libs.kotlinx.coroutines.test)
 }
 
-// `./gradlew :alertsrepository:generateMigrations` diffs the tables against a PostgreSQL in Docker
-// (after applying the existing scripts) and writes the new script to
-// src/main/resources/db/migration.
 exposed {
     migrations {
         tablesPackage = "cat.coeli.alerts.alertsrepository.infrastructure.postgres"

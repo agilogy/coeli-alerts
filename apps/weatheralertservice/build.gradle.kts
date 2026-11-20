@@ -19,6 +19,6 @@ dependencies {
 }
 
 application {
-    mainClass = "cat.coeli.alerts.app.MainKt"
+    mainClass = "cat.coeli.alerts.weatheralertservice.MainKt"
     applicationDefaultJvmArgs = listOf("-Dkotlin-logging.logStartupMessage=false")
 }

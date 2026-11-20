@@ -1,4 +1,4 @@
-package cat.coeli.alerts.app.domain
+package cat.coeli.alerts.weatheralertservice.domain
 
 import cat.coeli.alerts.alertsrepository.domain.Alert
 import cat.coeli.alerts.alertsrepository.domain.AlertId
@@ -17,12 +17,6 @@ private const val FORECAST_DAYS = 7
 private const val COLD_THRESHOLD_CELSIUS = 10.0
 private const val RECENT_ALERTS = 20
 
-/**
- * Turns the weather forecast into alerts.
- *
- * It depends only on domain interfaces, received in the constructor: `Main` decides which
- * implementations to use (Open-Meteo, PostgreSQL, the system clock), and tests pass fakes.
- */
 class WeatherAlertService(
     private val forecastProvider: WeatherForecastProvider,
     private val alertRepository: AlertRepository,
@@ -44,10 +38,6 @@ class WeatherAlertService(
         return alertRepository.search(AlertLevel.INFO, Pagination(offset = 0, size = RECENT_ALERTS))
     }
 
-    /**
-     * A WARNING alert, occurred now, for each day of the forecast with rain or a minimum below 10
-     * °C.
-     */
     fun weatherAlerts(forecast: WeatherForecast): List<Alert> =
         forecast.days
             .filter { it.precipitationMm > 0 || it.minTemperatureCelsius < COLD_THRESHOLD_CELSIUS }

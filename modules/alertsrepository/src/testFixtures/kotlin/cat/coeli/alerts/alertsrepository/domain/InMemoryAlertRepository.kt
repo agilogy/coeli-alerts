@@ -1,6 +1,5 @@
 package cat.coeli.alerts.alertsrepository.domain
 
-/** Keeps the alerts in memory, with the same behaviour as the real repository. */
 class InMemoryAlertRepository : AlertRepository {
     var alerts: List<Alert> = emptyList()
         private set

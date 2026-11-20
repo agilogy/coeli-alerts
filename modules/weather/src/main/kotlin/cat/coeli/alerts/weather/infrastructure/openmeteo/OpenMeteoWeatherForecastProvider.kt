@@ -17,10 +17,6 @@ import kotlinx.serialization.json.Json
 
 private val logger = KotlinLogging.logger {}
 
-/**
- * Forecasts from Open-Meteo (https://open-meteo.com): the geocoding API turns the city name into
- * coordinates, and the forecast API gives the daily forecast for them. Neither needs an API key.
- */
 class OpenMeteoWeatherForecastProvider(
     private val httpClient: HttpClient,
     private val geocodingUrl: String = "https://geocoding-api.open-meteo.com/v1/search",
@@ -70,10 +66,6 @@ class OpenMeteoWeatherForecastProvider(
     }
 }
 
-/**
- * An HTTP client that fails on non-2xx responses and reads Open-Meteo's JSON. Close it when done.
- * Tests pass a mock [engine] instead of the real one.
- */
 fun openMeteoHttpClient(engine: HttpClientEngine = CIO.create()): HttpClient =
     HttpClient(engine) {
         expectSuccess = true

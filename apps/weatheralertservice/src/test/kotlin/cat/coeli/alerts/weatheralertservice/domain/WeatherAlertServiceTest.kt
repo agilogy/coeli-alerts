@@ -1,4 +1,4 @@
-package cat.coeli.alerts.app.domain
+package cat.coeli.alerts.weatheralertservice.domain
 
 import cat.coeli.alerts.alertsrepository.domain.AlertLevel
 import cat.coeli.alerts.alertsrepository.domain.InMemoryAlertRepository

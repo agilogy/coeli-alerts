@@ -1,11 +1,11 @@
-package cat.coeli.alerts.app
+package cat.coeli.alerts.weatheralertservice
 
 import cat.coeli.alerts.alertsrepository.domain.Alert
 import cat.coeli.alerts.alertsrepository.domain.AlertLevel
 import cat.coeli.alerts.alertsrepository.infrastructure.postgres.PostgresAlertRepository
-import cat.coeli.alerts.app.domain.WeatherAlertService
 import cat.coeli.alerts.weather.infrastructure.openmeteo.OpenMeteoWeatherForecastProvider
 import cat.coeli.alerts.weather.infrastructure.openmeteo.openMeteoHttpClient
+import cat.coeli.alerts.weatheralertservice.domain.WeatherAlertService
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import io.github.oshai.kotlinlogging.KotlinLogging
@@ -16,7 +16,6 @@ import org.jetbrains.exposed.v1.jdbc.Database
 
 private val logger = KotlinLogging.logger {}
 
-/** Builds the weather alert service with its real dependencies, runs it and prints the result. */
 suspend fun main() {
     dataSourceFromEnvironment().use { dataSource ->
         migrateDatabase(dataSource)
@@ -46,7 +45,6 @@ private fun dataSourceFromEnvironment(): HikariDataSource =
         },
     )
 
-/** Applies the pending scripts found in classpath:db/migration of every module. */
 private fun migrateDatabase(dataSource: DataSource) {
     val migrations = Flyway.configure().dataSource(dataSource).load().migrate()
     logger.atInfo {
