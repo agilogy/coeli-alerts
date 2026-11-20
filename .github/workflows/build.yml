@@ -15,6 +15,7 @@ permissions:
   contents: read
   actions: read
   checks: write
+  pull-requests: write
 
 jobs:
   build:
@@ -27,7 +28,7 @@ jobs:
           distribution: temurin
           java-version: 25
       - uses: gradle/actions/setup-gradle@8da46b539cd8fe6ab27ca75128919a18d757604c # v6.4.1
-      - run: ./gradlew build --continue
+      - run: ./gradlew build koverXmlReport --continue
       - name: Test report
         uses: dorny/test-reporter@d1b5dff021aa968b288b02285a8bf47471c5928a # v3.2.0
         # Dependabot pull requests get a read-only token, which can't create the check.
@@ -38,3 +39,12 @@ jobs:
           reporter: java-junit
           fail-on-empty: false
           use-actions-summary: false
+      - name: Coverage report
+        uses: mi-kas/kover-report@94d69bc9d417de89b808cd5fe846bca2840911bb # v2.7
+        # Only pull requests get the comment; Dependabot's read-only token can't write it.
+        if: ${{ !cancelled() && github.event_name == 'pull_request' && github.actor != 'dependabot[bot]' }}
+        with:
+          path: ${{ github.workspace }}/build/reports/kover/report.xml
+          title: Code coverage
+          update-comment: true
+          coverage-counter-type: LINE
