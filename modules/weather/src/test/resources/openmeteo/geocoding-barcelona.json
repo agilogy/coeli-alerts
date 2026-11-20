@@ -1,0 +1,13 @@
+{
+  "results": [
+    {
+      "id": 3128760,
+      "name": "Barcelona",
+      "latitude": 41.38879,
+      "longitude": 2.15899,
+      "country_code": "ES",
+      "timezone": "Europe/Madrid"
+    }
+  ],
+  "generationtime_ms": 0.10716915
+}
