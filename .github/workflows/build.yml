@@ -3,10 +3,13 @@ name: Build
 on:
   pull_request:
     branches: [main]
+  # Builds on main are the only ones that save the Gradle cache that pull request builds read.
+  push:
+    branches: [main]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 permissions:
   contents: read
