@@ -8,6 +8,8 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.engine.cio.CIO
+import io.ktor.client.plugins.HttpRequestRetry
+import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
@@ -66,8 +68,20 @@ class OpenMeteoWeatherForecastProvider(
     }
 }
 
+private const val CONNECT_TIMEOUT_MILLIS = 5_000L
+private const val REQUEST_TIMEOUT_MILLIS = 10_000L
+private const val MAX_RETRIES = 2
+
 fun openMeteoHttpClient(engine: HttpClientEngine = CIO.create()): HttpClient =
     HttpClient(engine) {
         expectSuccess = true
         install(ContentNegotiation) { json(Json { ignoreUnknownKeys = true }) }
+        install(HttpTimeout) {
+            connectTimeoutMillis = CONNECT_TIMEOUT_MILLIS
+            requestTimeoutMillis = REQUEST_TIMEOUT_MILLIS
+        }
+        install(HttpRequestRetry) {
+            retryOnServerErrors(maxRetries = MAX_RETRIES)
+            exponentialDelay()
+        }
     }

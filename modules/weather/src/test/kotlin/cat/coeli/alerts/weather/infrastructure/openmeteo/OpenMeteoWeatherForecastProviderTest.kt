@@ -3,6 +3,7 @@ package cat.coeli.alerts.weather.infrastructure.openmeteo
 import cat.coeli.alerts.weather.domain.DailyForecast
 import cat.coeli.alerts.weather.domain.WeatherForecast
 import io.ktor.client.engine.mock.MockEngine
+import io.ktor.client.engine.mock.MockRequestHandleScope
 import io.ktor.client.engine.mock.respond
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
@@ -60,18 +61,43 @@ class OpenMeteoWeatherForecastProviderTest {
         assertFails { provider.forecast("Barcelona", days = 3) }
     }
 
+    @Test
+    fun forecastRetriesWhenOpenMeteoFailsTemporarily() = runTest {
+        var requests = 0
+        val provider =
+            OpenMeteoWeatherForecastProvider(
+                openMeteoHttpClient(
+                    MockEngine { request ->
+                        requests++
+                        when {
+                            requests == 1 -> respond("", HttpStatusCode.ServiceUnavailable)
+                            request.url.host.startsWith("geocoding") ->
+                                respondJson(resource("geocoding-barcelona.json"))
+                            else -> respondJson(resource("forecast-3-days.json"))
+                        }
+                    },
+                ),
+            )
+
+        val result = provider.forecast("Barcelona", days = 3)
+
+        assertEquals("Barcelona", result?.city)
+        assertEquals(3, requests)
+    }
+
     private fun providerRespondingWith(geocoding: String, forecast: String) =
         OpenMeteoWeatherForecastProvider(
             openMeteoHttpClient(
                 MockEngine { request ->
-                    respond(
-                        content =
-                            if (request.url.host.startsWith("geocoding")) geocoding else forecast,
-                        headers = headersOf(HttpHeaders.ContentType, "application/json"),
+                    respondJson(
+                        if (request.url.host.startsWith("geocoding")) geocoding else forecast,
                     )
                 },
             ),
         )
+
+    private fun MockRequestHandleScope.respondJson(content: String) =
+        respond(content, headers = headersOf(HttpHeaders.ContentType, "application/json"))
 
     private fun resource(name: String): String =
         requireNotNull(javaClass.getResource("/openmeteo/$name")) { "Missing test resource $name" }
