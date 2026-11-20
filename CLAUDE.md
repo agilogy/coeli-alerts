@@ -17,6 +17,9 @@ property-based testing, …) without asking.
 DATABASE_URL=… DATABASE_USER=… DATABASE_PASSWORD=… ./gradlew :weatheralertservice:run
 ```
 
+`main` is protected: changes go through a pull request, and the CI build (`.github/workflows/build.yml`,
+`./gradlew build`) must pass before merging.
+
 `build` fails on any ktfmt difference, any detekt issue and any compiler warning (`allWarningsAsErrors`): fix
 the cause, don't suppress it. Run `ktfmtFormat` before `build`.
 
@@ -46,6 +49,8 @@ the cause, don't suppress it. Run `ktfmtFormat` before `build`.
     Repository functions are `suspend`.
   - `infrastructure`: adapters, in a subpackage per technology. Implementations are named after it
     (`PostgresXxxRepository`), never `XxxRepositoryImpl`.
+- **Comments**: few. Nothing the code already shows (names, types, signatures); only non-obvious constraints
+  or reasons. Comments in domain code don't mention infrastructure (databases, specific APIs).
 - **Errors are exceptions**, not `Either`/result types. Validate invariants in `init` with `require(...)`
   (see `Pagination`).
 - **PostgreSQL access** uses Exposed's DSL (`exposed-jdbc`) over HikariCP. Tables are `internal object
