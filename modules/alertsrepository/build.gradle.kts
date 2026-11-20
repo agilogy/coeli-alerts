@@ -6,7 +6,10 @@ plugins {
 
 dependencies {
     implementation(libs.kotlinx.coroutines.core)
-    implementation(libs.bundles.exposed)
+    implementation(libs.exposed.core)
+    implementation(libs.exposed.r2dbc)
+    implementation(libs.exposed.kotlin.datetime)
+    runtimeOnly(libs.r2dbc.postgresql)
     implementation(libs.kotlin.logging)
 
     testImplementation(projects.testUtils)
