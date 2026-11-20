@@ -2,6 +2,7 @@ package cat.coeli.alerts.weatheralertservice.domain
 
 import cat.coeli.alerts.alertsrepository.domain.AlertLevel
 import cat.coeli.alerts.alertsrepository.domain.InMemoryAlertRepository
+import cat.coeli.alerts.testutils.FixedClock
 import cat.coeli.alerts.weather.domain.DailyForecast
 import cat.coeli.alerts.weather.domain.FakeWeatherForecastProvider
 import cat.coeli.alerts.weather.domain.WeatherForecast

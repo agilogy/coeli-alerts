@@ -1,4 +1,4 @@
-package cat.coeli.alerts.weatheralertservice.domain
+package cat.coeli.alerts.testutils
 
 import kotlin.time.Clock
 import kotlin.time.Instant
