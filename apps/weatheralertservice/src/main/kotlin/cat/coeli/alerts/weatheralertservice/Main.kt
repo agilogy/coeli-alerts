@@ -48,6 +48,18 @@ suspend fun main() {
 // Flyway only works with JDBC.
 private fun migrateDatabase(jdbcUrl: String, user: String, password: String) {
     val migrations = Flyway.configure().dataSource(jdbcUrl, user, password).load().migrate()
+    migrations.migrations.forEach { migration ->
+        logger.atInfo {
+            message = "Applied database migration"
+            payload =
+                mapOf(
+                    "version" to migration.version,
+                    "description" to migration.description,
+                    "type" to migration.type,
+                    "executionTimeMillis" to migration.executionTime,
+                )
+        }
+    }
     logger.atInfo {
         message = "Applied database migrations"
         payload = mapOf("migrationsExecuted" to migrations.migrationsExecuted)

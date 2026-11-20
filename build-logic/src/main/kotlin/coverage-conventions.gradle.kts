@@ -14,6 +14,8 @@ kover {
         filters {
             excludes {
                 packages("cat.coeli.alerts.testutils")
+                // The apps' entry points, which only wire the dependencies together.
+                classes("*.MainKt")
             }
         }
         verify {
