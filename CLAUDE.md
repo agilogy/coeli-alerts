@@ -17,6 +17,9 @@ property-based testing, …) without asking.
 DATABASE_URL=… DATABASE_USER=… DATABASE_PASSWORD=… ./gradlew :weatheralertservice:run
 ```
 
+`main` is protected: changes go through a pull request, and the CI build (`.github/workflows/build.yml`,
+`./gradlew build`) must pass before merging.
+
 `build` fails on any ktfmt difference, any detekt issue and any compiler warning (`allWarningsAsErrors`): fix
 the cause, don't suppress it. Run `ktfmtFormat` before `build`.
 
