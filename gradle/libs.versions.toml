@@ -12,6 +12,7 @@ embedded-postgres = "2.2.2"
 embedded-postgres-binaries = "19.0.0"
 ktfmt-gradle-plugin = "0.28.0"
 detekt = "2.0.0-alpha.6"
+kover = "0.9.11"
 flyway = "13.13.0"
 kotlin-logging = "8.0.7"
 logback = "1.6.8"
@@ -21,6 +22,7 @@ logback = "1.6.8"
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 ktfmt-gradle-plugin = { module = "com.ncorti.ktfmt.gradle:plugin", version.ref = "ktfmt-gradle-plugin" }
 detekt-gradle-plugin = { module = "dev.detekt:detekt-gradle-plugin", version.ref = "detekt" }
+kover-gradle-plugin = { module = "org.jetbrains.kotlinx:kover-gradle-plugin", version.ref = "kover" }
 
 # Logging
 kotlin-logging = { module = "io.github.oshai:kotlin-logging-jvm", version.ref = "kotlin-logging" }
@@ -71,3 +73,4 @@ kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", versi
 
 # Convention plugins from build-logic (no version: resolved from the included build)
 conventions-kotlin-jvm = { id = "kotlin-jvm-conventions" }
+conventions-coverage = { id = "coverage-conventions" }

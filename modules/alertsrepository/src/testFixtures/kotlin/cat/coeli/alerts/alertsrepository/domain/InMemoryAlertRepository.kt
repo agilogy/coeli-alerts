@@ -11,10 +11,12 @@ class InMemoryAlertRepository : AlertRepository {
 
     override suspend fun search(minimumLevel: AlertLevel, pagination: Pagination): List<Alert> =
         alerts
+            .asSequence()
             .filter { it.level >= minimumLevel }
             .sortedWith(
                 compareByDescending<Alert> { it.occurredAt }.thenBy { it.id.value.toString() },
             )
             .drop(pagination.offset.toInt())
             .take(pagination.size)
+            .toList()
 }

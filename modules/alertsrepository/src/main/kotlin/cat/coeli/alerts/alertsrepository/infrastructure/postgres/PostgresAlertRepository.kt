@@ -9,6 +9,7 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 import java.time.ZoneOffset
 import kotlin.time.toJavaInstant
 import kotlin.time.toKotlinInstant
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.jetbrains.exposed.v1.core.IntegerColumnType
@@ -26,7 +27,10 @@ import org.jetbrains.exposed.v1.jdbc.transactions.suspendTransaction
 
 private val logger = KotlinLogging.logger {}
 
-class PostgresAlertRepository(private val database: Database) : AlertRepository {
+class PostgresAlertRepository(
+    private val database: Database,
+    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
+) : AlertRepository {
 
     override suspend fun record(alert: Alert) {
         logger.atDebug {
@@ -34,11 +38,11 @@ class PostgresAlertRepository(private val database: Database) : AlertRepository 
             payload = mapOf("alertId" to alert.id.value, "alertLevel" to alert.level)
         }
         inTransaction {
-            AlertsTable.insert {
-                it[id] = alert.id.value
-                it[level] = alert.level
-                it[message] = alert.message
-                it[occurredAt] = alert.occurredAt.toJavaInstant().atOffset(ZoneOffset.UTC)
+            AlertsTable.insert { row ->
+                row[id] = alert.id.value
+                row[level] = alert.level
+                row[message] = alert.message
+                row[occurredAt] = alert.occurredAt.toJavaInstant().atOffset(ZoneOffset.UTC)
             }
         }
     }
@@ -69,17 +73,18 @@ class PostgresAlertRepository(private val database: Database) : AlertRepository 
     }
 
     // Alternative to search() in plain SQL instead of Exposed's DSL.
-    private suspend fun search2(minimumLevel: AlertLevel, pagination: Pagination): List<Alert> =
+    internal suspend fun search2(minimumLevel: AlertLevel, pagination: Pagination): List<Alert> =
         inTransaction {
             val levels = minimumLevel.atLeastAsSevere
             exec(
                     """
-                 SELECT id, level, message, occurred_at
-                 FROM alerts
-                 WHERE level IN (${levels.joinToString { "?" }})
-                 ORDER BY occurred_at DESC, id ASC
-                 LIMIT ? OFFSET ?
-                 """,
+                        SELECT id, level, message, occurred_at
+                        FROM alerts
+                        WHERE level IN (${levels.joinToString { "?" }})
+                        ORDER BY occurred_at DESC, id ASC
+                        LIMIT ? OFFSET ?
+                    """
+                        .trimIndent(),
                     args =
                         levels.map { VarCharColumnType() to it.name } +
                             listOf(
@@ -94,9 +99,11 @@ class PostgresAlertRepository(private val database: Database) : AlertRepository 
                             AlertsTable.message,
                             AlertsTable.occurredAt,
                         )
-                    buildList {
-                        while (resultSet.next()) {
-                            add(ResultRow.create(JdbcResult(resultSet), fieldsIndex).toAlert())
+                    JdbcResult(resultSet).use { result ->
+                        buildList<Alert> {
+                            while (resultSet.next()) {
+                                add(ResultRow.create(result, fieldsIndex).toAlert())
+                            }
                         }
                     }
                 }
@@ -104,7 +111,7 @@ class PostgresAlertRepository(private val database: Database) : AlertRepository 
         }
 
     private suspend fun <T> inTransaction(block: JdbcTransaction.() -> T): T =
-        withContext(Dispatchers.IO) { suspendTransaction(database) { block() } }
+        withContext(ioDispatcher) { suspendTransaction(database) { block() } }
 
     private fun ResultRow.toAlert(): Alert =
         Alert(

@@ -1,9 +1,11 @@
+import dev.detekt.gradle.Detekt
 import org.gradle.accessors.dm.LibrariesForLibs
 
 plugins {
     org.jetbrains.kotlin.jvm
     com.ncorti.ktfmt.gradle
     dev.detekt
+    org.jetbrains.kotlinx.kover
 }
 
 val libs = the<LibrariesForLibs>()
@@ -21,6 +23,15 @@ ktfmt {
 
 detekt {
     buildUponDefaultConfig = true
+    allRules = true
+    config.setFrom(rootProject.file("config/detekt/detekt.yml"))
+}
+
+// The detekt tasks with type resolution (detektMain, detektTest…) apply more rules than the plain `detekt`
+// task, which they replace in `check`.
+tasks.named("check") {
+    setDependsOn(dependsOn.filterNot { it is TaskProvider<*> && it.name == "detekt" })
+    dependsOn(tasks.withType<Detekt>().matching { it.name != "detekt" && !it.name.endsWith("SourceSet") })
 }
 
 dependencies {

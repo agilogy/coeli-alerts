@@ -1,0 +1,17 @@
+comments:
+  UndocumentedPublicClass:
+    active: false
+  UndocumentedPublicFunction:
+    active: false
+  UndocumentedPublicProperty:
+    active: false
+
+naming:
+  FunctionNameMaxLength:
+    excludes: ['**/test/**', '**/testFixtures/**']
+
+potential-bugs:
+  MissingUseCall:
+    excludes: ['**/test/**', '**/testFixtures/**']
+  UnnamedParameterUse:
+    excludes: ['**/test/**', '**/testFixtures/**']

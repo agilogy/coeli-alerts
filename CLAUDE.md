@@ -9,9 +9,10 @@ property-based testing, …) without asking.
 ## Commands
 
 ```bash
-./gradlew build                      # compile, tests, ktfmt check and detekt: must pass before considering work done
+./gradlew build                      # compile, tests, ktfmt, detekt and coverage: must pass before considering work done
 ./gradlew ktfmtFormat                # format all Kotlin sources and .kts scripts
-./gradlew detekt                     # lint only
+./gradlew detektMain detektTest      # lint only, with type resolution
+./gradlew koverHtmlReport             # coverage report of all modules (build/reports/kover)
 ./gradlew :alertsrepository:test --tests 'cat.coeli.alerts.alertsrepository.infrastructure.postgres.PostgresAlertRepositoryTest.searchBreaksTiesInOccurredAtById'
 ./gradlew :alertsrepository:generateMigrations # generate a Flyway script from the Exposed tables (needs Docker)
 DATABASE_URL=… DATABASE_USER=… DATABASE_PASSWORD=… ./gradlew :weatheralertservice:run
@@ -20,7 +21,8 @@ DATABASE_URL=… DATABASE_USER=… DATABASE_PASSWORD=… ./gradlew :weatheralert
 `main` is protected: changes go through a pull request, and the CI build (`.github/workflows/build.yml`,
 `./gradlew build`) must pass before merging.
 
-`build` fails on any ktfmt difference, any detekt issue and any compiler warning (`allWarningsAsErrors`): fix
+`build` fails on any ktfmt difference, any detekt issue (all rules, see `config/detekt/detekt.yml`), any compiler
+warning (`allWarningsAsErrors`) and a total line coverage below 80% (Kover, `coverage-conventions.gradle.kts`): fix
 the cause, don't suppress it. Run `ktfmtFormat` before `build`.
 
 ## Build structure

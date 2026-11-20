@@ -1,7 +1,5 @@
 package cat.coeli.alerts.weatheralertservice
 
-import cat.coeli.alerts.alertsrepository.domain.Alert
-import cat.coeli.alerts.alertsrepository.domain.AlertLevel
 import cat.coeli.alerts.alertsrepository.infrastructure.postgres.PostgresAlertRepository
 import cat.coeli.alerts.weather.infrastructure.openmeteo.OpenMeteoWeatherForecastProvider
 import cat.coeli.alerts.weather.infrastructure.openmeteo.openMeteoHttpClient
@@ -26,15 +24,21 @@ suspend fun main() {
                     clock = Clock.System,
                 )
                 .run("Barcelona")
-                .forEach { println(format(it)) }
+                .forEach { alert ->
+                    logger.atInfo {
+                        message = "Recent alert"
+                        payload =
+                            mapOf(
+                                "occurredAt" to alert.occurredAt,
+                                "alertLevel" to alert.level,
+                                "alertId" to alert.id.value,
+                                "alertMessage" to alert.message,
+                            )
+                    }
+                }
         }
     }
 }
-
-private val levelColumnWidth = AlertLevel.entries.maxOf { it.name.length }
-
-private fun format(alert: Alert): String =
-    "${alert.occurredAt}  ${alert.level.name.padEnd(levelColumnWidth)}  ${alert.id.value}  ${alert.message}"
 
 private fun dataSourceFromEnvironment(): HikariDataSource =
     HikariDataSource(

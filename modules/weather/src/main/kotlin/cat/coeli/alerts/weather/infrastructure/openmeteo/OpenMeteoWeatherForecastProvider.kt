@@ -5,6 +5,7 @@ import cat.coeli.alerts.weather.domain.WeatherForecast
 import cat.coeli.alerts.weather.domain.WeatherForecastProvider
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.client.HttpClient
+import io.ktor.client.HttpClientConfig
 import io.ktor.client.call.body
 import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.engine.cio.CIO
@@ -38,8 +39,8 @@ class OpenMeteoWeatherForecastProvider(
     private suspend fun findCity(city: String): GeocodingResult? =
         httpClient
             .get(geocodingUrl) {
-                parameter("name", city)
-                parameter("count", 1)
+                parameter(key = "name", value = city)
+                parameter(key = "count", value = 1)
             }
             .body<GeocodingResponse>()
             .results
@@ -49,11 +50,14 @@ class OpenMeteoWeatherForecastProvider(
         val daily =
             httpClient
                 .get(forecastUrl) {
-                    parameter("latitude", location.latitude)
-                    parameter("longitude", location.longitude)
-                    parameter("daily", "temperature_2m_min,temperature_2m_max,precipitation_sum")
-                    parameter("timezone", "auto")
-                    parameter("forecast_days", days)
+                    parameter(key = "latitude", value = location.latitude)
+                    parameter(key = "longitude", value = location.longitude)
+                    parameter(
+                        key = "daily",
+                        value = "temperature_2m_min,temperature_2m_max,precipitation_sum",
+                    )
+                    parameter(key = "timezone", value = "auto")
+                    parameter(key = "forecast_days", value = days)
                 }
                 .body<ForecastResponse>()
                 .daily
@@ -72,16 +76,20 @@ private const val CONNECT_TIMEOUT_MILLIS = 5_000L
 private const val REQUEST_TIMEOUT_MILLIS = 10_000L
 private const val MAX_RETRIES = 2
 
-fun openMeteoHttpClient(engine: HttpClientEngine = CIO.create()): HttpClient =
-    HttpClient(engine) {
-        expectSuccess = true
-        install(ContentNegotiation) { json(Json { ignoreUnknownKeys = true }) }
-        install(HttpTimeout) {
-            connectTimeoutMillis = CONNECT_TIMEOUT_MILLIS
-            requestTimeoutMillis = REQUEST_TIMEOUT_MILLIS
-        }
-        install(HttpRequestRetry) {
-            retryOnServerErrors(maxRetries = MAX_RETRIES)
-            exponentialDelay()
-        }
+fun openMeteoHttpClient(): HttpClient = HttpClient(CIO) { openMeteoConfig() }
+
+internal fun openMeteoHttpClient(engine: HttpClientEngine): HttpClient =
+    HttpClient(engine) { openMeteoConfig() }
+
+private fun HttpClientConfig<*>.openMeteoConfig() {
+    expectSuccess = true
+    install(ContentNegotiation) { json(Json { ignoreUnknownKeys = true }) }
+    install(HttpTimeout) {
+        connectTimeoutMillis = CONNECT_TIMEOUT_MILLIS
+        requestTimeoutMillis = REQUEST_TIMEOUT_MILLIS
     }
+    install(HttpRequestRetry) {
+        retryOnServerErrors(maxRetries = MAX_RETRIES)
+        exponentialDelay()
+    }
+}
