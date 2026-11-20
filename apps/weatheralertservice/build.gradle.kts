@@ -13,6 +13,7 @@ dependencies {
     runtimeOnly(libs.logback.classic)
     runtimeOnly(libs.postgresql)
 
+    testImplementation(projects.testUtils)
     testImplementation(testFixtures(projects.alertsrepository))
     testImplementation(testFixtures(projects.weather))
     testImplementation(libs.kotlinx.coroutines.test)
