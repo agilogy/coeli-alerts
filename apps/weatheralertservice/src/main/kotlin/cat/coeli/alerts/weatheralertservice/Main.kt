@@ -1,6 +1,7 @@
 package cat.coeli.alerts.weatheralertservice
 
 import cat.coeli.alerts.alertsrepository.infrastructure.postgres.PostgresAlertRepository
+import cat.coeli.alerts.kotlinutils.ExcludeFromCoverage
 import cat.coeli.alerts.weather.infrastructure.openmeteo.OpenMeteoWeatherForecastProvider
 import cat.coeli.alerts.weather.infrastructure.openmeteo.openMeteoHttpClient
 import cat.coeli.alerts.weatheralertservice.domain.WeatherAlertService
@@ -11,6 +12,7 @@ import org.jetbrains.exposed.v1.r2dbc.R2dbcDatabase
 
 private val logger = KotlinLogging.logger {}
 
+@ExcludeFromCoverage
 suspend fun main() {
     val jdbcUrl = environmentVariable("DATABASE_URL")
     val user = environmentVariable("DATABASE_USER")
@@ -46,6 +48,7 @@ suspend fun main() {
 }
 
 // Flyway only works with JDBC.
+@ExcludeFromCoverage
 private fun migrateDatabase(jdbcUrl: String, user: String, password: String) {
     val migrations = Flyway.configure().dataSource(jdbcUrl, user, password).load().migrate()
     migrations.migrations.forEach { migration ->
@@ -66,5 +69,6 @@ private fun migrateDatabase(jdbcUrl: String, user: String, password: String) {
     }
 }
 
+@ExcludeFromCoverage
 private fun environmentVariable(name: String): String =
     requireNotNull(System.getenv(name)) { "Missing environment variable $name" }
