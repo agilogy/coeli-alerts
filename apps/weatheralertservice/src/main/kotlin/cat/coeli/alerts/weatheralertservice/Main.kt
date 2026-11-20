@@ -1,6 +1,9 @@
+@file:ExcludeFromCoverage
+
 package cat.coeli.alerts.weatheralertservice
 
 import cat.coeli.alerts.alertsrepository.infrastructure.postgres.PostgresAlertRepository
+import cat.coeli.alerts.kotlinutils.ExcludeFromCoverage
 import cat.coeli.alerts.weather.infrastructure.openmeteo.OpenMeteoWeatherForecastProvider
 import cat.coeli.alerts.weather.infrastructure.openmeteo.openMeteoHttpClient
 import cat.coeli.alerts.weatheralertservice.domain.WeatherAlertService

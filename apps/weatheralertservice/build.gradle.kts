@@ -5,6 +5,7 @@ plugins {
 
 dependencies {
     implementation(projects.alertsrepository)
+    implementation(projects.kotlinUtils)
     implementation(projects.weather)
     implementation(libs.exposed.r2dbc)
     implementation(libs.bundles.flyway)
