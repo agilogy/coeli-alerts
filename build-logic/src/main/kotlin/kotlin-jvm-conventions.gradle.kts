@@ -44,4 +44,6 @@ dependencies {
 tasks.withType<Test>().configureEach {
     useJUnitPlatform()
     systemProperty("kotlin-logging.logStartupMessage", "false")
+    // Netty (used by r2dbc-postgresql) loads native libraries, which JDK 24+ warns about unless allowed.
+    jvmArgs("--enable-native-access=ALL-UNNAMED")
 }
