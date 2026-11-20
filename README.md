@@ -20,8 +20,8 @@ Each module separates `domain` from `infrastructure`.
 ./gradlew build
 ```
 
-Compiles, runs the tests (with an embedded PostgreSQL, no Docker needed), and checks formatting (ktfmt)
-and lint (detekt). `./gradlew ktfmtFormat` fixes the formatting.
+Compiles, runs the tests (with an embedded PostgreSQL, no Docker needed), and checks formatting (ktfmt),
+lint (detekt) and test coverage (Kover, at least 80% of lines). `./gradlew ktfmtFormat` fixes the formatting.
 
 ## Run
 

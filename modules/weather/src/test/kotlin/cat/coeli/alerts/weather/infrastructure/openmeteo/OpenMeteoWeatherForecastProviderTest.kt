@@ -32,9 +32,24 @@ class OpenMeteoWeatherForecastProviderTest {
                 city = "Barcelona",
                 days =
                     listOf(
-                        DailyForecast(LocalDate.parse("2026-11-20"), 10.9, 17.9, 0.0),
-                        DailyForecast(LocalDate.parse("2026-11-21"), 10.6, 17.9, 0.0),
-                        DailyForecast(LocalDate.parse("2026-11-22"), 12.8, 18.7, 0.3),
+                        DailyForecast(
+                            date = LocalDate.parse("2026-11-20"),
+                            minTemperatureCelsius = 10.9,
+                            maxTemperatureCelsius = 17.9,
+                            precipitationMm = 0.0,
+                        ),
+                        DailyForecast(
+                            date = LocalDate.parse("2026-11-21"),
+                            minTemperatureCelsius = 10.6,
+                            maxTemperatureCelsius = 17.9,
+                            precipitationMm = 0.0,
+                        ),
+                        DailyForecast(
+                            date = LocalDate.parse("2026-11-22"),
+                            minTemperatureCelsius = 12.8,
+                            maxTemperatureCelsius = 18.7,
+                            precipitationMm = 0.3,
+                        ),
                     ),
             ),
             result,

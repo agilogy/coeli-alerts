@@ -10,9 +10,9 @@ import kotlinx.coroutines.test.runTest
 
 abstract class AlertRepositoryContractTest {
 
-    protected abstract fun newRepository(): AlertRepository
-
     private lateinit var repository: AlertRepository
+
+    protected abstract fun newRepository(): AlertRepository
 
     @BeforeTest
     fun createRepository() {
