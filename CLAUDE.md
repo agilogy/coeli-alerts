@@ -46,6 +46,8 @@ the cause, don't suppress it. Run `ktfmtFormat` before `build`.
     Repository functions are `suspend`.
   - `infrastructure`: adapters, in a subpackage per technology. Implementations are named after it
     (`PostgresXxxRepository`), never `XxxRepositoryImpl`.
+- **Comments**: few. Nothing the code already shows (names, types, signatures); only non-obvious constraints
+  or reasons. Comments in domain code don't mention infrastructure (databases, specific APIs).
 - **Errors are exceptions**, not `Either`/result types. Validate invariants in `init` with `require(...)`
   (see `Pagination`).
 - **PostgreSQL access** uses Exposed's DSL (`exposed-jdbc`) over HikariCP. Tables are `internal object
