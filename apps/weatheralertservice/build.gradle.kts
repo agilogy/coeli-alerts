@@ -23,5 +23,11 @@ dependencies {
 
 application {
     mainClass = "cat.coeli.alerts.weatheralertservice.MainKt"
-    applicationDefaultJvmArgs = listOf("-Dkotlin-logging.logStartupMessage=false")
+    applicationDefaultJvmArgs =
+        listOf(
+            "-Dkotlin-logging.logStartupMessage=false",
+            // Netty (used by r2dbc-postgresql) loads native libraries, which JDK 24+ warns about
+            // unless allowed.
+            "--enable-native-access=ALL-UNNAMED",
+        )
 }
