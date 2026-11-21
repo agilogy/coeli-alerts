@@ -8,6 +8,4 @@ dependencies {
     runtimeOnly(libs.embedded.postgres.binaries.darwin.arm64v8)
     runtimeOnly(libs.bundles.flyway)
     runtimeOnly(libs.postgresql)
-    // Shows the output of embedded PostgreSQL (e.g. initdb errors) in tests.
-    runtimeOnly(libs.logback.classic)
 }

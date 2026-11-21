@@ -39,7 +39,10 @@ dependencies {
     testImplementation(platform(libs.junit.bom))
     testImplementation(libs.junit.jupiter)
     testRuntimeOnly(libs.junit.platform.launcher)
+    testRuntimeOnly(libs.logback.classic)
 }
+
+sourceSets.named("test") { resources.srcDir(rootProject.file("config/logback")) }
 
 tasks.withType<Test>().configureEach {
     useJUnitPlatform()
