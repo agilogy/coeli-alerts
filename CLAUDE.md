@@ -28,13 +28,15 @@ other way (`sed`, scripts, `git mv`…), run `./gradlew ktfmtFormat`.
 Coverage is measured and checked only on the root report (`koverHtmlReport`, `:koverLog`), with the exclusions;
 the per-module reports ignore them and show lower figures.
 
-`architectureCheck` (in `build-logic`, `cat.coeli.alerts.architecturecheck`) reads the compiled classes of every
-module and fails on: dependencies the layering forbids (Helper → Domain → Infrastructure, from abstract to concrete;
+`architectureCheck`, of the plugin [architecture-check](https://github.com/agilogy/architecture-check)
+(`libs.versions.toml`, published to GitHub Packages), reads the compiled classes of every module and fails on: dependencies the layering forbids (Helper → Domain → Infrastructure, from abstract to concrete;
 a package's layer is its deepest `domain` or `infrastructure` segment, any other package is Helper), classes
 placed lower than they need, package cycles, packages outside their module's root package, members more visible
 than their uses need or that nothing uses (other modules' tests don't count: they use `testFixtures`), libraries
 missing from `config/architecture/catalogue.jsonc`, dependencies declared with strings and `@Suppress`. There is no
 baseline: every finding is fixed, with the `architecture-fix` skill. CI shows the report in the build's summary.
+GitHub Packages asks for a token even to read, so every build needs `GitHubPackagesUsername` and
+`GitHubPackagesPassword` (a classic token with `read:packages`) in `~/.gradle/gradle.properties`.
 
 ## Build structure
 

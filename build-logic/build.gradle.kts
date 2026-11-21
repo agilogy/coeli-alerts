@@ -10,7 +10,4 @@ dependencies {
     // Makes the type-safe `libs` catalog usable from precompiled script plugins
     // (https://github.com/gradle/gradle/issues/15383).
     implementation(files(libs.javaClass.superclass.protectionDomain.codeSource.location))
-    implementation(projects.architectureCheck)
 }
-
-tasks.named("check") { dependsOn("${projects.architectureCheck.path}:check") }

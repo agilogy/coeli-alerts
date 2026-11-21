@@ -1,5 +1,17 @@
 pluginManagement {
     includeBuild("build-logic")
+    repositories {
+        gradlePluginPortal()
+        // The architecture-check plugin's dependencies.
+        mavenCentral()
+        // The architecture-check plugin. GitHub Packages asks for a token with read:packages even to read:
+        // GitHubPackagesUsername and GitHubPackagesPassword in ~/.gradle/gradle.properties.
+        maven("https://maven.pkg.github.com/agilogy/architecture-check") {
+            name = "GitHubPackages"
+            credentials(PasswordCredentials::class)
+            content { includeGroupByRegex("""cat\.coeli(\..*)?""") }
+        }
+    }
 }
 
 plugins {

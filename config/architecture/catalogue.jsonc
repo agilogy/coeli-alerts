@@ -1,7 +1,9 @@
-// Read by `./gradlew architectureCheck` (build-logic/src/main/kotlin/cat/coeli/alerts/architecturecheck).
+// Read by `./gradlew architectureCheck`, of the plugin https://github.com/agilogy/architecture-check.
 // Our own packages need no entry: the `domain` or `infrastructure` segment of their name gives their layer, and a
 // package with neither holds helpers.
 {
+    // Every module's root package hangs from it: cat.coeli.alerts.<module name without dashes>.
+    "ownPackage": "cat.coeli.alerts",
     // The layer each library plays for the code that uses it: Helper, Domain or Infrastructure. By package prefix, class
     // (`java.lang.System`) or member without its parameters (`java.lang.System#getenv`); the most precise entry wins.
     "libraries": {
