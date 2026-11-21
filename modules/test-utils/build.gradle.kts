@@ -8,4 +8,6 @@ dependencies {
     runtimeOnly(libs.embedded.postgres.binaries.darwin.arm64v8)
     runtimeOnly(libs.bundles.flyway)
     runtimeOnly(libs.postgresql)
+    // The logging backend of every module's tests, configured by logback-test.xml.
+    runtimeOnly(libs.logback.classic)
 }

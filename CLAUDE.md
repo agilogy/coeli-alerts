@@ -34,12 +34,13 @@ the cause, don't suppress it. Run `ktfmtFormat` before `build`.
 - **Shared build config** lives in the `build-logic` included build, in the convention plugin
   `kotlin-jvm-conventions.gradle.kts` (Kotlin JVM, JDK toolchain, warnings as errors, ktfmt with KotlinLang
   style, detekt, kotlin-test on JUnit Platform). Every module applies it with
-  `alias(libs.plugins.conventions.kotlin.jvm)`; no `allprojects`/`subprojects`.
+  `alias(libs.plugins.conventions.kotlin.jvm)`; no `allprojects`/`subprojects`, except in the root
+  `build.gradle.kts`, which adds `test-utils` to the tests of every other module.
 - **Everything is referenced through typed accessors**: libraries, plugins and versions in
   `gradle/libs.versions.toml` (`libs.…`), modules as `projects.…` (e.g. `projects.testUtils`). Don't write
   dependency coordinates or project paths as strings in build files.
-- `test-utils` holds helpers shared by tests (e.g. `testUuid(1)`); modules use it with
-  `testImplementation(projects.testUtils)`. Fakes of a module's domain interfaces (e.g.
+- `test-utils` holds helpers shared by tests (e.g. `testUuid(1)`) and their Logback configuration; every
+  other module gets it as a `testImplementation` dependency from the root `build.gradle.kts`. Fakes of a module's domain interfaces (e.g.
   `InMemoryAlertRepository`) live in that module's `testFixtures`, used with
   `testImplementation(testFixtures(projects.alertsrepository))`.
 
@@ -62,8 +63,8 @@ the cause, don't suppress it. Run `ktfmtFormat` before `build`.
   DTOs, and tests against responses recorded from the real API, served by Ktor's `MockEngine`.
 - **Logging** with kotlin-logging: `private val logger = KotlinLogging.logger {}` and lambda messages
   (`logger.info { "…" }`). Only apps have a logging backend (Logback, `src/main/resources/logback.xml`);
-  library modules depend only on kotlin-logging. Tests of every module use Logback with
-  `config/logback/logback-test.xml`, which enables `cat.coeli.alerts` down to TRACE (so the tests cover the
+  library modules depend only on kotlin-logging. Tests of every module use Logback through `test-utils`, with
+  its `logback-test.xml`, which enables `cat.coeli.alerts` down to TRACE (so the tests cover the
   code that builds those messages) but prints only INFO and above.
 
 ## Database migrations

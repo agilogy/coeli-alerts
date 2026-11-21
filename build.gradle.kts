@@ -4,3 +4,11 @@ plugins {
     alias(libs.plugins.conventions.coverage)
     alias(libs.plugins.kotlin.serialization) apply false
 }
+
+subprojects
+    .filter { it.path != projects.testUtils.path }
+    .forEach { module ->
+        module.pluginManager.withPlugin(libs.plugins.conventions.kotlin.jvm.get().pluginId) {
+            module.dependencies.add("testImplementation", projects.testUtils)
+        }
+    }

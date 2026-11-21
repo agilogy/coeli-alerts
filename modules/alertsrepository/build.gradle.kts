@@ -12,7 +12,6 @@ dependencies {
     runtimeOnly(libs.r2dbc.postgresql)
     implementation(libs.kotlin.logging)
 
-    testImplementation(projects.testUtils)
     testImplementation(libs.kotlinx.coroutines.test)
 }
 
