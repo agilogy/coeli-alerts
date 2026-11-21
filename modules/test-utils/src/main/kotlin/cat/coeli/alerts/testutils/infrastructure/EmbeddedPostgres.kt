@@ -1,4 +1,4 @@
-package cat.coeli.alerts.testutils
+package cat.coeli.alerts.testutils.infrastructure
 
 import io.zonky.test.db.postgres.embedded.FlywayPreparer
 import io.zonky.test.db.postgres.junit5.EmbeddedPostgresExtension

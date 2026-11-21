@@ -1,4 +1,4 @@
-package cat.coeli.alerts.weatheralertservice
+package cat.coeli.alerts.weatheralertservice.infrastructure
 
 import cat.coeli.alerts.alertsrepository.infrastructure.postgres.PostgresAlertRepository
 import cat.coeli.alerts.kotlinutils.ExcludeFromCoverage
