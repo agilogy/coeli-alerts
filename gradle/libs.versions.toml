@@ -18,7 +18,7 @@ kover = "0.9.11"
 flyway = "13.13.0"
 kotlin-logging = "8.0.7"
 logback = "1.6.8"
-architecture-check = "0.3.0"
+architecture-check = "0.3.1"
 
 [libraries]
 # Build logic (used only by build-logic)
