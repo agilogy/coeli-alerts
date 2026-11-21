@@ -15,7 +15,6 @@ dependencies {
     runtimeOnly(libs.r2dbc.postgresql)
     runtimeOnly(libs.r2dbc.pool)
 
-    testImplementation(projects.testUtils)
     testImplementation(testFixtures(projects.alertsrepository))
     testImplementation(testFixtures(projects.weather))
     testImplementation(libs.kotlinx.coroutines.test)
