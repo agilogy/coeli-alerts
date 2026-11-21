@@ -6,6 +6,8 @@ import cat.coeli.alerts.testutils.FixedClock
 import cat.coeli.alerts.weather.domain.DailyForecast
 import cat.coeli.alerts.weather.domain.FakeWeatherForecastProvider
 import cat.coeli.alerts.weather.domain.WeatherForecast
+import cat.coeli.alerts.weather.domain.dailyForecast
+import cat.coeli.alerts.weather.domain.weatherForecast
 import java.time.LocalDate
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -112,10 +114,10 @@ class WeatherAlertServiceTest {
             clock = FixedClock(now),
         )
 
-    private fun forecast(vararg days: DailyForecast) = WeatherForecast("Barcelona", days.toList())
+    private fun forecast(vararg days: DailyForecast) = weatherForecast("Barcelona", *days)
 
     private fun day(date: String, minTemperature: Double, precipitation: Double) =
-        DailyForecast(
+        dailyForecast(
             date = LocalDate.parse(date),
             minTemperatureCelsius = minTemperature,
             maxTemperatureCelsius = minTemperature + 5,
