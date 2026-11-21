@@ -2,6 +2,7 @@
 plugins {
     alias(libs.plugins.conventions.kotlin.jvm) apply false
     alias(libs.plugins.conventions.coverage)
+    alias(libs.plugins.architecture.check)
     alias(libs.plugins.kotlin.serialization) apply false
 }
 

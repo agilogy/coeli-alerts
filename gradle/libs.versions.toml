@@ -18,6 +18,7 @@ kover = "0.9.11"
 flyway = "13.13.0"
 kotlin-logging = "8.0.7"
 logback = "1.6.8"
+architecture-check = "0.3.0"
 
 [libraries]
 # Build logic (used only by build-logic)
@@ -75,6 +76,8 @@ flyway = ["flyway-core", "flyway-database-postgresql"]
 [plugins]
 exposed = { id = "org.jetbrains.exposed.plugin", version.ref = "exposed" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+# https://github.com/agilogy/architecture-check
+architecture-check = { id = "cat.coeli.architecture-check", version.ref = "architecture-check" }
 
 # Convention plugins from build-logic (no version: resolved from the included build)
 conventions-kotlin-jvm = { id = "kotlin-jvm-conventions" }
