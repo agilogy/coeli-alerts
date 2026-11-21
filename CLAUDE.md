@@ -10,9 +10,7 @@ property-based testing, …) without asking.
 
 ```bash
 ./gradlew build                      # compile, tests, ktfmt, detekt and coverage: must pass before considering work done
-./gradlew ktfmtFormat                # format all Kotlin sources and .kts scripts
-./gradlew detektMain detektTest      # lint only, with type resolution
-./gradlew koverHtmlReport             # coverage report of all modules (build/reports/kover)
+./gradlew koverHtmlReport            # coverage report of all modules (build/reports/kover)
 ./gradlew :alertsrepository:test --tests 'cat.coeli.alerts.alertsrepository.infrastructure.postgres.PostgresAlertRepositoryTest.searchBreaksTiesInOccurredAtById'
 ./gradlew :alertsrepository:generateMigrations # generate a Flyway script from the Exposed tables (needs Docker)
 DATABASE_URL=… DATABASE_USER=… DATABASE_PASSWORD=… ./gradlew :weatheralertservice:run
@@ -23,7 +21,11 @@ DATABASE_URL=… DATABASE_USER=… DATABASE_PASSWORD=… ./gradlew :weatheralert
 
 `build` fails on any ktfmt difference, any detekt issue (all rules, see `config/detekt/detekt.yml`), any compiler
 warning (`allWarningsAsErrors`) and a total line coverage below 80% (Kover, `coverage-conventions.gradle.kts`): fix
-the cause, don't suppress it. Run `ktfmtFormat` before `build`.
+the cause, don't suppress it. A hook formats the Kotlin files changed with Edit/Write; after changing them any
+other way (`sed`, scripts, `git mv`…), run `./gradlew ktfmtFormat`.
+
+Coverage is measured and checked only on the root report (`koverHtmlReport`, `:koverLog`), with the exclusions;
+the per-module reports ignore them and show lower figures.
 
 ## Build structure
 
@@ -40,8 +42,8 @@ the cause, don't suppress it. Run `ktfmtFormat` before `build`.
   `gradle/libs.versions.toml` (`libs.…`), modules as `projects.…` (e.g. `projects.testUtils`). Don't write
   dependency coordinates or project paths as strings in build files.
 - `test-utils` holds helpers shared by tests (e.g. `testUuid(1)`) and their Logback configuration; every
-  other module gets it as a `testImplementation` dependency from the root `build.gradle.kts`. Fakes of a module's domain interfaces (e.g.
-  `InMemoryAlertRepository`) live in that module's `testFixtures`, used with
+  other module gets it as a `testImplementation` dependency from the root `build.gradle.kts`. Fakes of a
+  module's domain interfaces (e.g. `InMemoryAlertRepository`) live in that module's `testFixtures`, used with
   `testImplementation(testFixtures(projects.alertsrepository))`.
 
 ## Code conventions
@@ -63,9 +65,8 @@ the cause, don't suppress it. Run `ktfmtFormat` before `build`.
   DTOs, and tests against responses recorded from the real API, served by Ktor's `MockEngine`.
 - **Logging** with kotlin-logging: `private val logger = KotlinLogging.logger {}` and lambda messages
   (`logger.info { "…" }`). Only apps have a logging backend (Logback, `src/main/resources/logback.xml`);
-  library modules depend only on kotlin-logging. Tests of every module use Logback through `test-utils`, with
-  its `logback-test.xml`, which enables `cat.coeli.alerts` down to TRACE (so the tests cover the
-  code that builds those messages) but prints only INFO and above.
+  library modules depend only on kotlin-logging. Tests use the Logback configuration of `test-utils`, which
+  runs the debug and trace messages (so they are covered) without printing them.
 
 ## Database migrations
 
@@ -89,3 +90,10 @@ the cause, don't suppress it. Run `ktfmtFormat` before `build`.
 - The PostgreSQL implementations run against a real database, never mocks: use `embeddedPostgres()` from
   `test-utils`; don't start a database of your own.
 - Coroutine code is tested with `runTest`.
+- **Coverage exclusions**: Kover leaves out the functions and classes annotated with
+  `@cat.coeli.alerts.kotlinutils.ExcludeFromCoverage` (dependency `projects.kotlinUtils`). Use it only for code
+  that connects the app to the real world and can't run in a test without it: the entry point
+  (`WeatherAlertServiceApp`) or the factory of the HTTP client with the real engine. Logic is never
+  excluded: test it, through a fake or a parameter (e.g. the `HttpClientEngine` overload used with
+  `MockEngine`). The annotation targets functions and classes only, not files, so that excluding code is
+  always a deliberate, local decision.
