@@ -1,5 +1,6 @@
 package cat.coeli.alerts.weather.infrastructure.openmeteo
 
+import cat.coeli.alerts.kotlinutils.ExcludeFromCoverage
 import cat.coeli.alerts.weather.domain.DailyForecast
 import cat.coeli.alerts.weather.domain.WeatherForecast
 import cat.coeli.alerts.weather.domain.WeatherForecastProvider
@@ -76,7 +77,7 @@ private const val CONNECT_TIMEOUT_MILLIS = 5_000L
 private const val REQUEST_TIMEOUT_MILLIS = 10_000L
 private const val MAX_RETRIES = 2
 
-fun openMeteoHttpClient(): HttpClient = HttpClient(CIO) { openMeteoConfig() }
+@ExcludeFromCoverage fun openMeteoHttpClient(): HttpClient = HttpClient(CIO) { openMeteoConfig() }
 
 internal fun openMeteoHttpClient(engine: HttpClientEngine): HttpClient =
     HttpClient(engine) { openMeteoConfig() }
