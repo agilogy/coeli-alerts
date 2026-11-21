@@ -79,6 +79,7 @@ flyway = ["flyway-core", "flyway-database-postgresql"]
 exposed = { id = "org.jetbrains.exposed.plugin", version.ref = "exposed" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 ktfmt = { id = "com.ncorti.ktfmt.gradle", version.ref = "ktfmt-gradle-plugin" }
+detekt = { id = "dev.detekt", version.ref = "detekt" }
 
 # Convention plugins from build-logic (no version: resolved from the included build)
 conventions-kotlin-jvm = { id = "kotlin-jvm-conventions" }
