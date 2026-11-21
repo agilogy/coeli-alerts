@@ -9,7 +9,8 @@ property-based testing, …) without asking.
 ## Commands
 
 ```bash
-./gradlew build                      # compile, tests, ktfmt, detekt and coverage: must pass before considering work done
+./gradlew build                      # compile, tests, ktfmt, detekt, coverage and architecture check: must pass before considering work done
+./gradlew architectureCheck          # architecture check only (build/reports/architecture)
 ./gradlew koverHtmlReport            # coverage report of all modules (build/reports/kover)
 ./gradlew :alertsrepository:test --tests 'cat.coeli.alerts.alertsrepository.infrastructure.postgres.PostgresAlertRepositoryTest.searchBreaksTiesInOccurredAtById'
 ./gradlew :alertsrepository:generateMigrations # generate a Flyway script from the Exposed tables (needs Docker)
@@ -20,12 +21,20 @@ DATABASE_URL=… DATABASE_USER=… DATABASE_PASSWORD=… ./gradlew :weatheralert
 `./gradlew build`) must pass before merging.
 
 `build` fails on any ktfmt difference, any detekt issue (all rules, see `config/detekt/detekt.yml`), any compiler
-warning (`allWarningsAsErrors`) and a total line coverage below 80% (Kover, `coverage-conventions.gradle.kts`): fix
-the cause, don't suppress it. A hook formats the Kotlin files changed with Edit/Write; after changing them any
+warning (`allWarningsAsErrors`), a total line coverage below 80% (Kover, `coverage-conventions.gradle.kts`) and any
+architecture finding (see below): fix the cause, don't suppress it. A hook formats the Kotlin files changed with Edit/Write; after changing them any
 other way (`sed`, scripts, `git mv`…), run `./gradlew ktfmtFormat`.
 
 Coverage is measured and checked only on the root report (`koverHtmlReport`, `:koverLog`), with the exclusions;
 the per-module reports ignore them and show lower figures.
+
+`architectureCheck` (in `build-logic`, `cat.coeli.alerts.architecturecheck`) reads the compiled classes of every
+module and fails on: dependencies the layering forbids (Helper → Domain → Infrastructure, from abstract to concrete;
+a package's layer is its deepest `domain` or `infrastructure` segment, any other package is Helper), classes
+placed lower than they need, package cycles, packages outside their module's root package, members more visible
+than their uses need or that nothing uses (other modules' tests don't count: they use `testFixtures`), libraries
+missing from `config/architecture/catalogue.jsonc`, dependencies declared with strings and `@Suppress`. There is no
+baseline: every finding is fixed, with the `architecture-fix` skill. CI shows the report in the build's summary.
 
 ## Build structure
 

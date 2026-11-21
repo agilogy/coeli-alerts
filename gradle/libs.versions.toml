@@ -18,6 +18,7 @@ kover = "0.9.11"
 flyway = "13.13.0"
 kotlin-logging = "8.0.7"
 logback = "1.6.8"
+archunit = "1.5.1"
 
 [libraries]
 # Build logic (used only by build-logic)
@@ -25,6 +26,8 @@ kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", v
 ktfmt-gradle-plugin = { module = "com.ncorti.ktfmt.gradle:plugin", version.ref = "ktfmt-gradle-plugin" }
 detekt-gradle-plugin = { module = "dev.detekt:detekt-gradle-plugin", version.ref = "detekt" }
 kover-gradle-plugin = { module = "org.jetbrains.kotlinx:kover-gradle-plugin", version.ref = "kover" }
+archunit = { module = "com.tngtech.archunit:archunit", version.ref = "archunit" }
+kotlin-metadata-jvm = { module = "org.jetbrains.kotlin:kotlin-metadata-jvm", version.ref = "kotlin" }
 
 # Logging
 kotlin-logging = { module = "io.github.oshai:kotlin-logging-jvm", version.ref = "kotlin-logging" }
@@ -75,7 +78,9 @@ flyway = ["flyway-core", "flyway-database-postgresql"]
 [plugins]
 exposed = { id = "org.jetbrains.exposed.plugin", version.ref = "exposed" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+ktfmt = { id = "com.ncorti.ktfmt.gradle", version.ref = "ktfmt-gradle-plugin" }
 
 # Convention plugins from build-logic (no version: resolved from the included build)
 conventions-kotlin-jvm = { id = "kotlin-jvm-conventions" }
 conventions-coverage = { id = "coverage-conventions" }
+conventions-architecture = { id = "architecture-conventions" }

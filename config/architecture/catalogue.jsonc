@@ -1,0 +1,37 @@
+// Read by `./gradlew architectureCheck` (build-logic/src/main/kotlin/cat/coeli/alerts/architecturecheck).
+// Our own packages need no entry: the `domain` or `infrastructure` segment of their name gives their layer, and a
+// package with neither holds helpers.
+{
+    // The layer each library plays for the code that uses it: Helper, Domain or Infrastructure. By package prefix, class
+    // (`java.lang.System`) or member without its parameters (`java.lang.System#getenv`); the most precise entry wins.
+    "libraries": {
+        "java": "Helper",
+        "java.io": "Infrastructure",
+        "java.lang.System": "Infrastructure",
+        "java.lang.Thread": "Infrastructure",
+        "java.net": "Infrastructure",
+        "java.nio": "Infrastructure",
+        "java.sql": "Infrastructure",
+        "kotlin": "Helper",
+        "kotlin.io.ConsoleKt": "Infrastructure",
+        "kotlin.io.FilesKt": "Infrastructure",
+        "kotlinx.coroutines": "Helper",
+        "kotlinx.serialization": "Infrastructure",
+        "io.github.oshai.kotlinlogging": "Helper",
+        "io.ktor": "Infrastructure",
+        "io.r2dbc": "Infrastructure",
+        "io.zonky": "Infrastructure",
+        "org.flywaydb": "Infrastructure",
+        "org.intellij.lang.annotations": "Helper",
+        "org.jetbrains.annotations": "Helper",
+        "org.jetbrains.exposed": "Infrastructure",
+        "org.junit": "Infrastructure"
+    },
+    // Rules a `@Suppress` may name. Anything else is fixed, not suppressed.
+    "allowedSuppressions": [
+        // IntelliJ's: a JUnit extension in an instance field, which `embeddedPostgres()` needs.
+        "JUnitMalformedDeclaration"
+    ],
+    // Modules whose production code exists for the tests of other modules, which count as its uses.
+    "testSupportModules": ["modules/test-utils"]
+}
