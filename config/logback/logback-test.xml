@@ -1,0 +1,18 @@
+<configuration>
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} %-5level [%thread] %logger{36} - %msg %kvp%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- TRACE makes the tests build every trace and debug message (and cover that code); the console filter
+         above keeps them out of the output. -->
+    <logger name="cat.coeli.alerts" level="TRACE"/>
+
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+    </root>
+</configuration>

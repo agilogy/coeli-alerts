@@ -62,7 +62,9 @@ the cause, don't suppress it. Run `ktfmtFormat` before `build`.
   DTOs, and tests against responses recorded from the real API, served by Ktor's `MockEngine`.
 - **Logging** with kotlin-logging: `private val logger = KotlinLogging.logger {}` and lambda messages
   (`logger.info { "…" }`). Only apps have a logging backend (Logback, `src/main/resources/logback.xml`);
-  library modules depend only on kotlin-logging.
+  library modules depend only on kotlin-logging. Tests of every module use Logback with
+  `config/logback/logback-test.xml`, which enables `cat.coeli.alerts` down to TRACE (so the tests cover the
+  code that builds those messages) but prints only INFO and above.
 
 ## Database migrations
 
