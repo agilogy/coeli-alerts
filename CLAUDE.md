@@ -75,7 +75,7 @@ the cause, don't suppress it. Run `ktfmtFormat` before `build`.
   the module's `exposed { migrations { … } }` block), review them, and never edit a script that may already
   have been applied.
 - Each app applies the pending migrations of the modules it uses with Flyway at startup (see
-  `apps/weatheralertservice/.../Main.kt`).
+  `apps/weatheralertservice/.../WeatherAlertServiceApp.kt`).
 
 ## Tests
 

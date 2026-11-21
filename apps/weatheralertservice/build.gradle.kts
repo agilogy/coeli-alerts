@@ -10,6 +10,7 @@ dependencies {
     implementation(libs.exposed.r2dbc)
     implementation(libs.bundles.flyway)
     implementation(libs.kotlin.logging)
+    implementation(libs.kotlinx.coroutines.core)
     runtimeOnly(libs.logback.classic)
     runtimeOnly(libs.postgresql)
     runtimeOnly(libs.r2dbc.postgresql)
@@ -21,7 +22,7 @@ dependencies {
 }
 
 application {
-    mainClass = "cat.coeli.alerts.weatheralertservice.MainKt"
+    mainClass = "cat.coeli.alerts.weatheralertservice.WeatherAlertServiceApp"
     applicationDefaultJvmArgs =
         listOf(
             "-Dkotlin-logging.logStartupMessage=false",
