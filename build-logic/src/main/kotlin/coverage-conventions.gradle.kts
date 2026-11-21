@@ -13,7 +13,6 @@ kover {
     reports {
         filters {
             excludes {
-                packages("cat.coeli.alerts.testutils")
                 annotatedBy("cat.coeli.alerts.kotlinutils.ExcludeFromCoverage")
             }
         }
