@@ -1,5 +1,7 @@
 package cat.coeli.alerts.weatheralertservice.domain
 
+// Test of the coverage comment: do not merge.
+
 import cat.coeli.alerts.alertsrepository.domain.Alert
 import cat.coeli.alerts.alertsrepository.domain.AlertId
 import cat.coeli.alerts.alertsrepository.domain.AlertLevel
